@@ -1,5 +1,6 @@
 
 
+import 'package:feg_store/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,7 @@ import '../../bloc/bloc/app_event.dart';
 import '../../bloc/bloc/app_state.dart';
 import '../../model/login_response.dart';
 import '../../service/api_service.dart';
-import '../otp.dart';
+import '../verify_otp/otp.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -45,7 +46,6 @@ class _LoginPageState extends State<LoginPage> {
           if (state is LoginPageLoaded) {
             buildLoadedLayout(state.response);
           } else if (state is LoginPageError) {
-            print("error");
           }
           return Padding(
             padding: const EdgeInsets.all(26.0),
@@ -207,13 +207,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void buildLoadedLayout(LoginResponse response) {
-    Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) =>  BlocProvider<OtpBloc>.value(
-            value: OtpBloc(VerifyOtpRepo()),
-            child:OtpScreen(
-            mobile: response.mobile,
-            otp: response.otp.toString(),
-            id: response.id.toString()))));
+    Navigator.pushNamed(
+      context,
+      verifyRoute,
+      arguments: response
+    );
   }
 
 

@@ -52,8 +52,3 @@ class VerifyOtpRepo extends VerifyRepository {
     throw Exception();
   }
 }
-
-class ApiService {
-  String baseUrl = "https://blacksquad.dev.fegno.com/api/v1/user/";
-  static var client = http.Client();
-}

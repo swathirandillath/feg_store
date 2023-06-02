@@ -1,9 +1,11 @@
+import 'package:feg_store/routes/generated_routes.dart';
 import 'package:feg_store/screen/login/login.dart';
 import 'package:feg_store/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'bloc/bloc/app_blocs.dart';
+import 'constants/constants.dart';
 
 
 void main() {
@@ -18,10 +20,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(),
-      home: BlocProvider<LoginPageBloc>.value(
-        value: LoginPageBloc(LoginRepo()),
-        child: const LoginPage(),
-      ),
+        initialRoute: loginRoute,
+        onGenerateRoute: RouteGenerator().generateRoute,
     );
   }
 }

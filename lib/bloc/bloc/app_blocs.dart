@@ -28,14 +28,12 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
 class OtpBloc extends Bloc<OtpScreenEvent, OtpScreenState> {
   late OtpResponse otpResponse;
   final VerifyOtpRepo verifyOtpRepo;
-
   OtpBloc(this.verifyOtpRepo) : super(OtpScreenInitial()) {
     on<OtpScreenEvent>((event, emit) async {
       if (event is VerifyOtp) {
         emit(OtpScreenLoading());
         await Future.delayed(const Duration(seconds: 2), () async {
           otpResponse = await verifyOtpRepo.otpVerification(event.mobile, event.otp, event.id);
-
           emit(OtpScreenLoaded(otpResponse));
         });
       }
