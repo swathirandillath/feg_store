@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:feg_store/bloc/login_blc/login_blocs.dart';
-import 'package:feg_store/bloc/login_blc/login_state.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../bloc/login_blc/login_event.dart';
+import '../bloc/bloc/app_blocs.dart';
+import '../bloc/bloc/app_event.dart';
+import '../bloc/bloc/app_state.dart';
 import '../model/otp_response.dart';
 import '../rating_page/rating_post.dart';
-import '../service/api_service.dart';
 
 class OtpScreen extends StatefulWidget {
   String mobile;
@@ -28,7 +28,6 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   final formKey = GlobalKey<FormState>();
-  final ApiService _service = ApiService();
 
   late Timer _timer;
   int _start = 30;

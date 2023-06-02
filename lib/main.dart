@@ -3,7 +3,8 @@ import 'package:feg_store/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/login_blc/login_blocs.dart';
+import 'bloc/bloc/app_blocs.dart';
+
 
 void main() {
   runApp(const MyApp());

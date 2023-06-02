@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/login_response.dart';
 import '../../service/api_service.dart';
-import 'login_event.dart';
-import 'login_state.dart';
+import 'app_event.dart';
+import 'app_state.dart';
 
 class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
   late LoginResponse response;

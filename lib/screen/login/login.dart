@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/login_blc/login_blocs.dart';
-import '../../bloc/login_blc/login_event.dart';
-import '../../bloc/login_blc/login_state.dart';
+
+import '../../bloc/bloc/app_blocs.dart';
+import '../../bloc/bloc/app_event.dart';
+import '../../bloc/bloc/app_state.dart';
 import '../../model/login_response.dart';
 import '../../service/api_service.dart';
 import '../otp.dart';
