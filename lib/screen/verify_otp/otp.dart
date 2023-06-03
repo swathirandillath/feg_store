@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'package:feg_store/model/login_response.dart';
-import 'package:feg_store/screen/rating_page/rating_post.dart';
+import 'package:feg_store/util/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../bloc/bloc/app_blocs.dart';
 import '../../bloc/bloc/app_event.dart';
 import '../../bloc/bloc/app_state.dart';
+import '../../constants/constants.dart';
 import '../../model/otp_response.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -16,7 +18,9 @@ class OtpScreen extends StatefulWidget {
   final String? otp;
   final String? id;
 
-  const OtpScreen({Key? key,required this.mobile,required this.otp,required this.id}) : super(key: key);
+  const OtpScreen(
+      {Key? key, required this.mobile, required this.otp, required this.id})
+      : super(key: key);
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -26,6 +30,7 @@ class _OtpScreenState extends State<OtpScreen> {
   final formKey = GlobalKey<FormState>();
 
   late Timer _timer;
+  String otp = "";
   int _start = 30;
 
   void startTimer() {
@@ -61,9 +66,6 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       body: SafeArea(
         child: BlocConsumer<OtpBloc, OtpScreenState>(
@@ -71,6 +73,8 @@ class _OtpScreenState extends State<OtpScreen> {
           builder: (context, state) {
             if (state is OtpScreenLoaded) {
               buildLoadedLayout(state.otpResponse);
+              print('OTP Verify buildLoadedLayout');
+
             } else if (state is OtpScreenError) {
               print("error");
             }
@@ -80,29 +84,29 @@ class _OtpScreenState extends State<OtpScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Text(
+                    Text(
                       'FEGSTORE',
-                      style: TextStyle(
-                          color: Color(0xff4d53e5),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    const Text(
+                    Text(
                       'Verify your number',
-                      style: TextStyle(color: Colors.black, fontSize: 25),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.black, fontWeight: FontWeight.normal),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Please enter the 4 digit otp sent to  ',
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
-                        ),
-                        const Text(
-                          'number ',
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
-                        ),
+                        Text('Please enter the 4 digit otp sent to  ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.grey)),
+                        Text('number ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: Colors.grey)),
                         const SizedBox(
                           height: 25,
                         ),
@@ -137,6 +141,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             keyboardType: TextInputType.number,
                             onCompleted: (value) {
                               print('onCompleted $value');
+                                otp = value;
                             },
                             onChanged: (value) {},
                             beforeTextPaste: (text) {
@@ -147,11 +152,11 @@ class _OtpScreenState extends State<OtpScreen> {
                         ),
                         _start != 0
                             ? Text(
-                                _start.toString(),
-                                style: const TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                                '00:${_start.toString()}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(color: Colors.red),
                               )
                             : Container()
                       ],
@@ -162,35 +167,49 @@ class _OtpScreenState extends State<OtpScreen> {
                           borderRadius: BorderRadius.circular(10.0)),
                       color: const Color(0xff4d53e5),
                       onPressed: () {
-                        BlocProvider.of<OtpBloc>(context).add(
-                            VerifyOtp(widget.mobile.toString(),widget.otp.toString(),widget.id.toString()));
+                        if (widget.otp == otp) {
+                          _timer.cancel();
+                          BlocProvider.of<OtpBloc>(context).add(VerifyOtp(
+                              widget.mobile.toString(),
+                              widget.otp.toString(),
+                              widget.id.toString()));
+                        } else {
+                          showToast('OTP does not match');
+                        }
                       },
                       child: Center(
                         child: (state is OtpScreenLoading)
                             ? const CircularProgressIndicator(
                                 color: Colors.white,
                               )
-                            : const Text(
+                            : Text(
                                 "Verify",
-                                style: TextStyle(color: Colors.white),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(color: Colors.white),
                               ),
                       ),
                     ),
                     RichText(
-                      text: const TextSpan(
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.grey,
-                        ),
+                      text: TextSpan(
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.grey),
                         children: <TextSpan>[
-                          TextSpan(
+                          const TextSpan(
                             text: "Didn't receive the code? ",
                           ),
                           TextSpan(
-                              text: ' Resend',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red)),
+                            text: ' Resend',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Colors.red,
+                                ),
+                          ),
                         ],
                       ),
                     )
@@ -206,5 +225,13 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void buildLoadedLayout(OtpResponse otpResponse) {
 
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      showToast('OTP Verified');
+      Navigator.pushReplacementNamed(
+          context,
+          ratingReview,
+      );
+
+    });
   }
 }

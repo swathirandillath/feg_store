@@ -16,7 +16,7 @@ class LoginPageBloc extends Bloc<LoginPageEvent, LoginPageState> {
     on<LoginPageEvent>((event, emit) async {
       if (event is SendData) {
         emit(LoginPageLoading());
-        await Future.delayed(const Duration(seconds: 2), () async {
+        await Future.delayed(const Duration(seconds: 1), () async {
           response = await loginRepo.loginWithNumber(
               event.mobile, event.appSign, event.name);
           emit(LoginPageLoaded(response));
@@ -32,7 +32,7 @@ class OtpBloc extends Bloc<OtpScreenEvent, OtpScreenState> {
     on<OtpScreenEvent>((event, emit) async {
       if (event is VerifyOtp) {
         emit(OtpScreenLoading());
-        await Future.delayed(const Duration(seconds: 2), () async {
+        await Future.delayed(const Duration(seconds: 1), () async {
           otpResponse = await verifyOtpRepo.otpVerification(event.mobile, event.otp, event.id);
           emit(OtpScreenLoaded(otpResponse));
         });

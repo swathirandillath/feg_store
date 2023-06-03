@@ -45,7 +45,6 @@ class VerifyOtpRepo extends VerifyRepository {
         await client.post(Uri.parse("${baseUrl}enter_otp/"), body: body);
 
     var statusCode = response.statusCode;
-
     if (statusCode == 200) {
       return OtpResponse.fromJson(jsonDecode(response.body));
     }

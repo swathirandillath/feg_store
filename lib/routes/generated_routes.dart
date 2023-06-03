@@ -1,5 +1,6 @@
 import 'package:feg_store/bloc/bloc/app_blocs.dart';
 import 'package:feg_store/screen/login/login.dart';
+import 'package:feg_store/screen/rating_review/rating_review.dart';
 import 'package:feg_store/screen/verify_otp/otp.dart';
 import 'package:feg_store/service/api_service.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,10 @@ class RouteGenerator {
           value:_otpBloc ,
           child:  OtpScreen(mobile: args.mobile, otp: args.otp.toString(),id: args.id.toString()),
         ));
+
+      case ratingReview:
+        return MaterialPageRoute(builder: (_)=>const RatingReview());
+
 
       default:
         return _errorRoute();

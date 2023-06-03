@@ -1,14 +1,17 @@
 
 
 import 'package:feg_store/constants/constants.dart';
+import 'package:feg_store/util/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 import '../../bloc/bloc/app_blocs.dart';
 import '../../bloc/bloc/app_event.dart';
 import '../../bloc/bloc/app_state.dart';
+import '../../constants/app_colors.dart';
 import '../../model/login_response.dart';
 import '../../service/api_service.dart';
 import '../verify_otp/otp.dart';
@@ -58,17 +61,14 @@ class _LoginPageState extends State<LoginPage> {
                       flex: 1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
+                        children:  [
                           Text(
                             'Welcome To',
-                            style: TextStyle(color: Colors.black, fontSize: 25),
+                            style:  Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black),
                           ),
                           Text(
                             'FEGSTORE',
-                            style: TextStyle(
-                                color: Color(0xff4d53e5),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25),
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ],
                       ),
@@ -107,8 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                               controller: numberController,
                               decoration: InputDecoration(
                                 hintText: "please enter your phone number",
-                                hintStyle: const TextStyle(
-                                    color: Colors.grey, fontSize: 14),
+                                hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                                 enabledBorder: OutlineInputBorder(
                                     borderSide:
                                         const BorderSide(color: Colors.black45),
@@ -131,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: 50,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0)),
-                            color: const Color(0xff4d53e5),
+                            color: Palette.primary,
                             onPressed: () =>
                                 BlocProvider.of<LoginPageBloc>(context).add(
                                     SendData(numberController.text, "phone",
@@ -153,12 +152,9 @@ class _LoginPageState extends State<LoginPage> {
                                 const Text("By clicking Continue you agree to",
                                     style: TextStyle(color: Colors.grey)),
                                 RichText(
-                                  text: const TextSpan(
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.black,
-                                    ),
-                                    children: <TextSpan>[
+                                  text:  TextSpan(
+                                    style:  Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                                    children: const <TextSpan>[
                                       TextSpan(
                                           text: 'Privacy Policy',
                                           style: TextStyle(
@@ -207,11 +203,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void buildLoadedLayout(LoginResponse response) {
-    Navigator.pushNamed(
-      context,
-      verifyRoute,
-      arguments: response
-    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      showToast('OTP is : ${response.otp.toString()}');
+      Navigator.pushNamed(
+          context,
+          verifyRoute,
+          arguments: response
+      );
+
+    });
+
   }
 
 
