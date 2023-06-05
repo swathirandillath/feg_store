@@ -224,12 +224,12 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void buildLoadedLayout(OtpResponse otpResponse) {
-
     WidgetsBinding.instance.addPostFrameCallback((_){
       showToast('OTP Verified');
       Navigator.pushReplacementNamed(
           context,
-          ratingReview,
+          ratingReviewRoute,
+          arguments: otpResponse
       );
 
     });

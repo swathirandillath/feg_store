@@ -1,3 +1,4 @@
 const String loginRoute = '/';
 const String verifyRoute = '/verifyOtp';
-const String ratingReview = '/ratingReview';
+const String ratingReviewRoute = '/ratingReview';
+const String pageListRoute = '/pageList';
