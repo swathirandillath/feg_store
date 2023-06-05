@@ -50,7 +50,6 @@ class RouteGenerator {
                     BlocProvider<ReviewBloc>.value(
                       value: _reviewBloc,
                     ),
-
                   ],
                   child: RatingReview(
                     userid: arguments.userId.toString(),
@@ -58,11 +57,11 @@ class RouteGenerator {
                   ),
                 ));
       case pageListRoute:
-        final arguments = settings.arguments as OtpResponse;
+        final arguments = settings.arguments;
         return MaterialPageRoute(
             builder: (_) => BlocProvider<PlanBloc>.value(
                   value: _planBloc,
-                  child: Plans(arguments.token.toString()),
+                  child: Plans(arguments.toString()),
                 ));
 
       default:

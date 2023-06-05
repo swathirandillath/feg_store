@@ -44,7 +44,8 @@ class _RatingReviewState extends State<RatingReview> {
     return BlocConsumer<RatingBloc, RatingState>(builder: (context, state) {
       final pages = <Widget>[
         rating(context, controller, ratingCount),
-        review(context, textEditingController, ratingCount, controller)
+        review(context, textEditingController, ratingCount, controller,
+            widget.token.toString())
       ];
       if (state is RatingLoaded) {
         pageIndex = 1;
@@ -133,10 +134,14 @@ class _RatingReviewState extends State<RatingReview> {
                               widget.token.toString()));
                     },
                     child: Center(
-                      child: Text(
-                        pageIndex == 0 ? "Next" : "Save",
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                      child: (state is RatingLoading)
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text(
+                              pageIndex == 0 ? "Next" : "Save",
+                              style: const TextStyle(color: Colors.white),
+                            ),
                     ),
                   ),
                 ),
@@ -317,14 +322,13 @@ Widget rating(context, controller, ratingCount) {
   );
 }
 
-Widget review(context, textEditingController, ratingCount, controller) {
+Widget review(context, textEditingController, ratingCount, controller, token) {
   return BlocConsumer<ReviewBloc, ReviewState>(
       builder: (context, state) {
         if (state is ReviewLoaded) {
-          // Navigator.pushReplacementNamed(
-          //   context,
-          //   pageListRoute,
-          // );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushNamed(context, pageListRoute, arguments: token);
+          });
         } else if (state is ReviewError) {}
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

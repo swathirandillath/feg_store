@@ -1,12 +1,9 @@
-
-
 import 'package:feg_store/constants/constants.dart';
 import 'package:feg_store/util/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 
 import '../../bloc/bloc/app_blocs.dart';
 import '../../bloc/bloc/app_event.dart';
@@ -27,6 +24,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   TextEditingController numberController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -48,8 +46,7 @@ class _LoginPageState extends State<LoginPage> {
         builder: (context, state) {
           if (state is LoginPageLoaded) {
             buildLoadedLayout(state.response);
-          } else if (state is LoginPageError) {
-          }
+          } else if (state is LoginPageError) {}
           return Padding(
             padding: const EdgeInsets.all(26.0),
             child: SingleChildScrollView(
@@ -61,10 +58,13 @@ class _LoginPageState extends State<LoginPage> {
                       flex: 1,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children:  [
+                        children: [
                           Text(
                             'Welcome To',
-                            style:  Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.black),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(color: Colors.black),
                           ),
                           Text(
                             'FEGSTORE',
@@ -102,27 +102,38 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           SizedBox(
                             height: 50,
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: numberController,
-                              decoration: InputDecoration(
-                                hintText: "please enter your phone number",
-                                hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.black45),
-                                    borderRadius: BorderRadius.circular(10) //
-                                    ),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.black45),
-                                    borderRadius: BorderRadius.circular(10) //
-                                    ),
-                                errorBorder: OutlineInputBorder(
-                                    borderSide:
-                                        const BorderSide(color: Colors.red),
-                                    borderRadius: BorderRadius.circular(10) //
-                                    ),
+                            child: Form(
+                              key: _formKey,
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                controller: numberController,
+                                decoration: InputDecoration(
+                                  hintText: "please enter your phone number",
+                                  hintStyle: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.grey),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.black45),
+                                      borderRadius: BorderRadius.circular(10) //
+                                      ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                          color: Colors.black45),
+                                      borderRadius: BorderRadius.circular(10) //
+                                      ),
+                                ),
+                                validator: (value) {
+                                  if(value!.isEmpty){
+                                    return "please enter your number";
+                                  }
+                                  else if(value.length!=10){
+                                    return " please enter a valid number";
+                                  }
+                                  return null;
+
+                                },
                               ),
                             ),
                           ),
@@ -131,10 +142,13 @@ class _LoginPageState extends State<LoginPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0)),
                             color: Palette.primary,
-                            onPressed: () =>
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
                                 BlocProvider.of<LoginPageBloc>(context).add(
                                     SendData(numberController.text, "phone",
-                                        "name")),
+                                        "name"));
+                              }
+                            },
                             child: Center(
                               child: (state is LoginPageLoading)
                                   ? const CircularProgressIndicator(
@@ -152,8 +166,11 @@ class _LoginPageState extends State<LoginPage> {
                                 const Text("By clicking Continue you agree to",
                                     style: TextStyle(color: Colors.grey)),
                                 RichText(
-                                  text:  TextSpan(
-                                    style:  Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                                  text: TextSpan(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: Colors.grey),
                                     children: const <TextSpan>[
                                       TextSpan(
                                           text: 'Privacy Policy',
@@ -203,17 +220,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void buildLoadedLayout(LoginResponse response) {
-
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       showToast('OTP is : ${response.otp.toString()}');
-      Navigator.pushNamed(
-          context,
-          verifyRoute,
-          arguments: response
-      );
-
+      Navigator.pushNamed(context, verifyRoute, arguments: response);
     });
-
   }
 
 
