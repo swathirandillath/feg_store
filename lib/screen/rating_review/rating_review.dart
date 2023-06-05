@@ -47,7 +47,8 @@ class _RatingReviewState extends State<RatingReview> {
         review(context, textEditingController, ratingCount, controller)
       ];
       if (state is RatingLoaded) {
-        controller.animateToPage(1,
+        pageIndex = 1;
+        controller.animateToPage(pageIndex,
             curve: Curves.decelerate,
             duration: const Duration(milliseconds: 300));
       } else if (state is RatingError) {}
@@ -67,7 +68,7 @@ class _RatingReviewState extends State<RatingReview> {
             onPressed: () {
               pageIndex == 0
                   ? Navigator.pop(context)
-                  : controller.animateToPage(0,
+                  : controller.animateToPage(pageIndex,
                       curve: Curves.decelerate,
                       duration: const Duration(milliseconds: 300));
             },
