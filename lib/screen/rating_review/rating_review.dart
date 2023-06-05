@@ -37,16 +37,15 @@ class _RatingReviewState extends State<RatingReview> {
   final controller = PageController(viewportFraction: 1, keepPage: true);
   int pageIndex = 0;
   final TextEditingController textEditingController = TextEditingController();
-  double ratingCount = 0;
+  double ratingCount = 3;
 
   @override
   Widget build(BuildContext context) {
-    print(ratingCount);
-    final pages = <Widget>[
-      rating(context, controller, ratingCount),
-      review(context, textEditingController, ratingCount, controller)
-    ];
     return BlocConsumer<RatingBloc, RatingState>(builder: (context, state) {
+      final pages = <Widget>[
+        rating(context, controller, ratingCount),
+        review(context, textEditingController, ratingCount, controller)
+      ];
       if (state is RatingLoaded) {
         controller.animateToPage(1,
             curve: Curves.decelerate,
@@ -190,7 +189,7 @@ Widget rating(context, controller, ratingCount) {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: RatingBar.builder(
-                initialRating: 0,
+                initialRating: 3,
                 itemCount: 5,
                 itemBuilder: (context, index) {
                   switch (index) {

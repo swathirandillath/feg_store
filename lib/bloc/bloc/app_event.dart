@@ -36,7 +36,6 @@ class AddRating extends RatingEvent {
 class Rating extends RatingEvent {
    double rating;
    double ratingCount;
-
   Rating(this.rating, this.ratingCount);
 }
 
