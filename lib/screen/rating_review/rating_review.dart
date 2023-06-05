@@ -190,7 +190,7 @@ Widget rating(context, controller, ratingCount) {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: RatingBar.builder(
-                initialRating: 3,
+                initialRating: 0,
                 itemCount: 5,
                 itemBuilder: (context, index) {
                   switch (index) {
