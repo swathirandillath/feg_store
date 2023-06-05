@@ -8,6 +8,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../bloc/bloc/app_event.dart';
 import '../../constants/app_colors.dart';
+import '../../util/utils.dart';
 
 class RatingReview extends StatefulWidget {
   final String? userid;
@@ -38,6 +39,7 @@ class _RatingReviewState extends State<RatingReview> {
   int pageIndex = 0;
   final TextEditingController textEditingController = TextEditingController();
   double ratingCount = 3;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class _RatingReviewState extends State<RatingReview> {
       final pages = <Widget>[
         rating(context, controller, ratingCount),
         review(context, textEditingController, ratingCount, controller,
-            widget.token.toString())
+            widget.token.toString(), _formKey)
       ];
       if (state is RatingLoaded) {
         pageIndex = 1;
@@ -123,15 +125,22 @@ class _RatingReviewState extends State<RatingReview> {
                     onPressed: () {
                       print('Page: $pageIndex');
                       print('----ratingCount btn-- $ratingCount');
+
                       pageIndex == 0
-                          ? BlocProvider.of<RatingBloc>(context).add(AddRating(
-                              widget.userid.toString(),
-                              ratingCount.round().toString(),
-                              widget.token.toString()))
-                          : BlocProvider.of<ReviewBloc>(context).add(AddReview(
-                              widget.userid.toString(),
-                              textEditingController.text.toString(),
-                              widget.token.toString()));
+                          ? ratingCount == 0
+                              ? showToast("please add rating")
+                              : BlocProvider.of<RatingBloc>(context).add(
+                                  AddRating(
+                                      widget.userid.toString(),
+                                      ratingCount.round().toString(),
+                                      widget.token.toString()))
+                          : _formKey.currentState!.validate()
+                              ? BlocProvider.of<ReviewBloc>(context).add(
+                                  AddReview(
+                                      widget.userid.toString(),
+                                      textEditingController.text.toString(),
+                                      widget.token.toString()))
+                              : null;
                     },
                     child: Center(
                       child: (state is RatingLoading)
@@ -322,7 +331,8 @@ Widget rating(context, controller, ratingCount) {
   );
 }
 
-Widget review(context, textEditingController, ratingCount, controller, token) {
+Widget review(
+    context, textEditingController, ratingCount, controller, token, formKey) {
   return BlocConsumer<ReviewBloc, ReviewState>(
       builder: (context, state) {
         if (state is ReviewLoaded) {
@@ -383,22 +393,35 @@ Widget review(context, textEditingController, ratingCount, controller, token) {
               padding: const EdgeInsets.only(top: 8.0),
               child: SizedBox(
                 width: 300,
-                child: TextFormField(
-                  controller: textEditingController,
-                  maxLines: 3, //or null
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black45),
-                        borderRadius: BorderRadius.circular(10) //
-                        ),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black45),
-                        borderRadius: BorderRadius.circular(10) //
-                        ),
-                    errorBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.red),
-                        borderRadius: BorderRadius.circular(10) //
-                        ),
+                child: Form(
+                  key: formKey,
+                  child: TextFormField(
+                    controller: textEditingController,
+                    maxLines: 3, //or null
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black45),
+                          borderRadius: BorderRadius.circular(10) //
+                          ),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black45),
+                          borderRadius: BorderRadius.circular(10) //
+                          ),
+                      errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black45),
+                          borderRadius: BorderRadius.circular(10) //
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black45),
+                          borderRadius: BorderRadius.circular(10) //
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "please add review";
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ),
